@@ -1,0 +1,220 @@
+config:
+  target: "http://localhost"
+  phases:
+    # Warm-up phase
+    - duration: 30
+      arrivalRate: 5
+      name: "Warm up"
+    # Ramp-up phase
+    - duration: 60
+      arrivalRate: 10
+      rampTo: 50
+      name: "Ramp up load"
+    # Sustained high load
+    - duration: 120
+      arrivalRate: 50
+      name: "Sustained load"
+    # Spike test
+    - duration: 30
+      arrivalRate: 100
+      name: "Spike test"
+  
+  defaults:
+    headers:
+      Accept: "application/json"
+      Content-Type: "application/x-www-form-urlencoded"
+  
+  variables:
+    # These will be populated during test
+    csrfToken: ""
+
+  plugins:
+    expect: {}
+
+scenarios:
+  # Scenario 1: Guest browsing (login page)
+  - name: "Guest - Visit Login Page"
+    weight: 20
+    flow:
+      - get:
+          url: "/"
+          capture:
+            - css: "input[name='_token']"
+              attr: "value"
+              as: "csrfToken"
+          expect:
+            - statusCode: 200
+
+  # Scenario 2: Authenticated user - Dashboard/Tasks
+  - name: "Auth User - Browse Tasks"
+    weight: 30
+    flow:
+      # Login first
+      - get:
+          url: "/"
+          capture:
+            - css: "input[name='_token']"
+              attr: "value"
+              as: "csrfToken"
+      - post:
+          url: "/login"
+          form:
+            email: "admin@taskflow.com"
+            password: "Password123!"
+            _token: "{{ csrfToken }}"
+          followRedirect: true
+          expect:
+            - statusCode: 200
+      # Browse tasks
+      - get:
+          url: "/tasks"
+          expect:
+            - statusCode: 200
+      # Browse with filters
+      - get:
+          url: "/tasks?status=Pendiente"
+          expect:
+            - statusCode: 200
+      - get:
+          url: "/tasks?priority=Alta"
+          expect:
+            - statusCode: 200
+      - get:
+          url: "/tasks?view=my_tasks"
+          expect:
+            - statusCode: 200
+
+  # Scenario 3: Search functionality stress test
+  - name: "Search Tasks"
+    weight: 15
+    flow:
+      - get:
+          url: "/"
+          capture:
+            - css: "input[name='_token']"
+              attr: "value"
+              as: "csrfToken"
+      - post:
+          url: "/login"
+          form:
+            email: "admin@taskflow.com"
+            password: "Password123!"
+            _token: "{{ csrfToken }}"
+          followRedirect: true
+      - get:
+          url: "/tasks?search=tarea"
+          expect:
+            - statusCode: 200
+      - get:
+          url: "/tasks?search=urgente"
+          expect:
+            - statusCode: 200
+      - get:
+          url: "/tasks?search=proyecto"
+          expect:
+            - statusCode: 200
+
+  # Scenario 4: Task creation stress
+  - name: "Create Task"
+    weight: 10
+    flow:
+      - get:
+          url: "/"
+          capture:
+            - css: "input[name='_token']"
+              attr: "value"
+              as: "csrfToken"
+      - post:
+          url: "/login"
+          form:
+            email: "admin@taskflow.com"
+            password: "Password123!"
+            _token: "{{ csrfToken }}"
+          followRedirect: true
+      - get:
+          url: "/tasks/create"
+          capture:
+            - css: "input[name='_token']"
+              attr: "value"
+              as: "csrfToken"
+          expect:
+            - statusCode: 200
+      - post:
+          url: "/tasks"
+          form:
+            title: "Stress Test Task {{ $timestamp }}"
+            description: "This is a stress test task created at {{ $timestamp }}"
+            assignee_id: 1
+            priority: "Alta"
+            start_date: "2024-01-01"
+            due_date: "2024-12-31"
+            _token: "{{ csrfToken }}"
+          followRedirect: true
+          expect:
+            - statusCode: 200
+
+  # Scenario 5: Notifications endpoint stress
+  - name: "Poll Notifications"
+    weight: 15
+    flow:
+      - get:
+          url: "/"
+          capture:
+            - css: "input[name='_token']"
+              attr: "value"
+              as: "csrfToken"
+      - post:
+          url: "/login"
+          form:
+            email: "admin@taskflow.com"
+            password: "Password123!"
+            _token: "{{ csrfToken }}"
+          followRedirect: true
+      - loop:
+          - get:
+              url: "/api/notifications/unread-count"
+              expect:
+                - statusCode: 200
+          - get:
+              url: "/api/notifications/recent"
+              expect:
+                - statusCode: 200
+        count: 5
+
+  # Scenario 6: Admin panel stress
+  - name: "Admin Dashboard"
+    weight: 10
+    flow:
+      - get:
+          url: "/"
+          capture:
+            - css: "input[name='_token']"
+              attr: "value"
+              as: "csrfToken"
+      - post:
+          url: "/login"
+          form:
+            email: "admin@taskflow.com"
+            password: "Password123!"
+            _token: "{{ csrfToken }}"
+          followRedirect: true
+      - get:
+          url: "/admin"
+          expect:
+            - statusCode: 200
+      - get:
+          url: "/admin/users"
+          expect:
+            - statusCode: 200
+      - get:
+          url: "/admin/tasks"
+          expect:
+            - statusCode: 200
+      - get:
+          url: "/admin/reports"
+          expect:
+            - statusCode: 200
+      - get:
+          url: "/admin/analytics/data"
+          expect:
+            - statusCode: 200
