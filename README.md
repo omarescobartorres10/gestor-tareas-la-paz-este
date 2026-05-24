@@ -1,5 +1,3 @@
-Aquí tienes una versión profesional y en primera persona, manteniendo un tono serio sin voseo:
-
 ---
 
 <div align="center">
