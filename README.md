@@ -1,4 +1,4 @@
-Aquí tienes el README reescrito con un tono natural y personal:
+Aquí tienes una versión profesional y en primera persona, manteniendo un tono serio sin voseo:
 
 ---
 
@@ -11,62 +11,62 @@ Aquí tienes el README reescrito con un tono natural y personal:
     <img src="https://img.shields.io/badge/Alpine.js-8bc0d0?style=flat-square&logo=alpine.js" alt="Alpine.js">
     <img src="https://img.shields.io/badge/PHP-8.2+-777bb3?style=flat-square&logo=php" alt="PHP 8.2+">
   </p>
-  <p><strong>Organizá tareas, charlá con tu equipo y mantené todo el contexto en un solo lugar.</strong></p>
+  <p><strong>Gestión de tareas con chat integrado y menciones en tiempo real para equipos municipales.</strong></p>
 </div>
 
 ---
 
-## ¿De qué va esto?
+## Acerca del proyecto
 
-TaskFlow es un gestor de tareas que armamos para que los equipos de la municipalidad de La Paz Este puedan trabajar sin perder el hilo. La mayoría de los tableros kanban te dejan mover tarjetas de una columna a otra y ya está. Acá cada tarea tiene su propio chat, así que las decisiones, las dudas y los acuerdos quedan atados a lo que hay que hacer, no perdidos en un grupo de WhatsApp.
+TaskFlow es un sistema de gestión de tareas que desarrollé para los equipos internos de la municipalidad de La Paz Este. A diferencia de un tablero kanban convencional, cada tarea incorpora un chat en tiempo real donde los miembros del equipo pueden discutir detalles, resolver dudas y tomar decisiones sin que la información quede dispersa en canales externos.
 
-Además, podés mencionar compañeros con @ y ellos reciben una notificación al toque. Todo queda documentado sin esfuerzo extra.
-
----
-
-## Por qué sirve
-
-- **Contexto unificado:** Cada tarea tiene su conversación. No hay que andar buscando en tres lados distintos para entender por qué se tomó una decisión.
-- **Rápido de verdad:** Usamos caché agresiva, consultas optimizadas y Alpine.js para que la interfaz responda sin demoras.
-- **Seguro:** Autenticación de Laravel, roles definidos y protección CSRF. Cada quien ve solo lo que le corresponde.
-- **Menciones inteligentes:** Escribí @nombre y la persona recibe una notificación. Nada de cadenas de correos interminables.
+El sistema permite mencionar a otros usuarios con el formato @nombre, lo que dispara una notificación inmediata. De esta forma, el contexto de cada tarea se mantiene centralizado y documentado de manera natural.
 
 ---
 
-## Lo que podés hacer
+## Funcionalidades principales
 
-- Crear, editar y mover tareas entre columnas
-- Asignar responsables y fechas de vencimiento
-- Chatear dentro de cada tarea en tiempo real
-- Mencionar compañeros con @
-- Filtrar y buscar tareas al instante
-- Adjuntar archivos directamente a una tarea
-- Ver un historial de cambios por tarea
+- Tablero kanban con columnas personalizables
+- Creación, edición y eliminación de tareas
+- Asignación de responsables y fechas de vencimiento
+- Chat en tiempo real dentro de cada tarea
+- Menciones con @usuario y notificaciones instantáneas
+- Filtros y búsqueda de tareas
+- Adjuntar archivos a tareas
+- Historial de cambios por tarea
+- Roles de usuario con permisos diferenciados
 
 ---
 
-## Tecnologías
+## Tecnologías utilizadas
 
 - **Backend:** Laravel 12, PHP 8.2+
 - **Frontend:** Tailwind CSS 4, Alpine.js, Blade
 - **Base de datos:** MySQL
 - **Tiempo real:** Laravel Echo con Pusher
-- **Paquetería:** Vite para assets, Composer para dependencias PHP
+- **Herramientas:** Vite, Composer
 
 ---
 
-## Cómo levantarlo en tu máquina
+## Instalación y configuración local
 
-Necesitás tener PHP 8.2 o más, Composer, Node.js con npm y MySQL.
+### Requisitos previos
 
-**1. Clonar el repo**
+- PHP 8.2 o superior
+- Composer
+- Node.js y npm
+- MySQL
+
+### Pasos
+
+**1. Clonar el repositorio**
 
 ```bash
 git clone <url-del-repositorio>
 cd gestor-tareas-la-paz-este-main
 ```
 
-**2. Dependencias de PHP**
+**2. Instalar dependencias de PHP**
 
 ```bash
 composer install
@@ -74,22 +74,20 @@ composer install
 
 **3. Configurar el entorno**
 
-Copiá el archivo de ejemplo y generá la llave:
-
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-Editá el `.env` con los datos de tu base de datos. Si vas a usar Pusher para el tiempo real, configurá también las credenciales ahí.
+Editar el archivo `.env` con las credenciales de la base de datos. Para la funcionalidad de tiempo real es necesario configurar las credenciales de Pusher en este mismo archivo.
 
-**4. Base de datos y datos de prueba**
+**4. Migraciones y datos de prueba**
 
 ```bash
 php artisan migrate --seed
 ```
 
-Esto crea las tablas y carga algunos usuarios y tareas de ejemplo para que puedas probar.
+Este comando genera la estructura de la base de datos y carga datos de prueba.
 
 **5. Dependencias de frontend**
 
@@ -98,38 +96,38 @@ npm install
 npm run build
 ```
 
-**6. Arrancar**
+**6. Iniciar el servidor**
 
 ```bash
 php artisan serve
 ```
 
-Abrí `http://localhost:8000` y listo.
+La aplicación estará disponible en `http://localhost:8000`.
 
 ---
 
 ## Datos de prueba
 
-Si corriste los seeders, vas a tener un usuario administrador y algunos miembros de equipo cargados. Los detalles exactos están en el archivo `DATOS_DEMO.md` que dejamos en la raíz del proyecto.
+Los seeders generan un usuario administrador y varios miembros de equipo con tareas de ejemplo. Las credenciales y el detalle de los datos precargados se encuentran en el archivo `DATOS_DEMO.md`.
 
 ---
 
-## La API
+## API
 
-TaskFlow expone varios endpoints para integrarse con otros sistemas. Si necesitás conectar algo, revisá `API_DOCUMENTATION.md` donde está todo documentado con ejemplos de requests y responses.
+El sistema expone endpoints para integración con otros sistemas. La documentación completa, con ejemplos de peticiones y respuestas, está disponible en `API_DOCUMENTATION.md`.
 
 ---
 
-## Estructura rápida
+## Estructura del proyecto
 
 - `app/Models/` — Modelos: Tarea, Usuario, Comentario, Proyecto
-- `app/Http/Controllers/` — Lógica de negocio y endpoints
-- `app/Events/` — Eventos para notificaciones en tiempo real
+- `app/Http/Controllers/` — Lógica de negocio y controladores
+- `app/Events/` — Eventos del sistema de notificaciones en tiempo real
 - `routes/web.php` — Rutas de la interfaz web
 - `routes/api.php` — Endpoints de la API
-- `resources/views/` — Vistas en Blade con componentes de Alpine.js
+- `resources/views/` — Vistas Blade con componentes de Alpine.js
 - `database/migrations/` — Esquema de la base de datos
 
 ---
 
-*Hecho para que los equipos de La Paz Este se enfoquen en hacer, no en coordinarse.*
+*Desarrollado para optimizar la coordinación de los equipos internos de La Paz Este.*
